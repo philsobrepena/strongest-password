@@ -1,0 +1,57 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(to right, rgb(255, 255, 255),  rgb(215, 215, 255));
+    padding: 5vw;
+}
+
+h1 {
+    color: white;
+    text-align: center;
+    background: linear-gradient(to right, rgb(0, 0, 192), rgb(95, 255, 95));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h2, p {
+    color: rgb(60, 60, 60);
+    text-align: center;
+    font-family: monospace;
+}
+
+#ascii-container {
+    position: relative;
+    width: 80vw;
+    height: 50vw;
+    padding: 2vw;
+}
+
+#ascii-input {
+    position: relative;
+    width: 100%;
+    height: 80%;
+    resize: both; /* Allow resizing of textarea */
+    overflow: auto; /* Enable scrolling */
+    font-family: monospace; /* Use monospace font for consistent character width */
+    padding: 1vw;
+}
+
+
+#playback-head {
+    position: absolute;
+    width: 10px; /* Adjust the width */
+    height: 10px; /* Adjust the height */
+    border-radius: 50%; /* Make it a circle */
+    background-color: red;
+
+}
+
+.buttons {
+    border-radius: 12px;
+    margin: 1vw;
+}
+.controls{
+    color: black;
+    font-family: monospace;
+    margin: 2vw;
+    padding: 1vw;
+}

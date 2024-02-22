@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>strongestpassword.fm</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <!-- include Tone.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/tone@latest/build/Tone.min.js"></script>
+</head>
+<body>
+    <h1>💪 strongestpassword.fm</h1>
+
+    <h2>Turn your ASCII Art into Audio</h2>
+    <p>here's a <a href="https://www.asciiart.eu/" target="https://www.asciiart.eu/">link</a> to some ascii art</p>
+    <div id="ascii-container">
+    <div id="button-div">
+
+        <button class="buttons" id="play-button">submit</button>
+        <button class="buttons" id="stop-button">stop</button>
+
+        <label class="controls" for="bpm-input">BPM:</label>
+        <input type="number" id="bpm-input" min="1" value="120">
+
+        <label class="controls" for="synth1-volume">Synth 1 Volume:</label>
+        <input type="range" id="synth1-volume" min="0" max="0.8" step="0.01" value="0.3">
+
+        <label class="controls" for="synth2-volume">Synth 2 Volume:</label>
+        <input type="range" id="synth2-volume" min="0" max="0.8" step="0.01" value="0.3">
+
+    </div>
+        <!-- Textarea for ASCII art input, 100 x 100 -->
+        <textarea id="ascii-input" rows="100" cols="100"></textarea>
+        <div id="playback-head"></div>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

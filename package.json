@@ -1,0 +1,22 @@
+{
+  "name": "image-to-audio",
+  "version": "1.0.0",
+  "description": "Converts an ascii art input to audio",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server . -p 8000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Phil",
+  "license": "MIT",
+  "dependencies": {
+    "tone": "^14.8.49"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
