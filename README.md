@@ -5,166 +5,95 @@ Welcome! Thanks for checking out my audio prototype.
 This project is an ASCII image to Audio conversion tool. It will take any size input of ascii characters under 10,000 in length, and algorithmically generate audio from it!
 
 
-to begin, access the project from your teminal. you can do this by right clicking on the project directory and clicking "New Terminal at Folder"
+To begin, access the project from your teminal. you can do this by right clicking on the project directory and clicking "New Terminal at Folder"
 
 
-to start the server, run the following command in terminal:
+To start the server, run the following command in terminal:
 
 npm start
 
-this will start a server at localhost:8000, which can be visited in your browser at:
+This will start a server at localhost:8000, which can be visited in your browser at. Make sure you're connected to the internet!
 
 http://localhost:8000/
 
 Congrats! You can now use the prototype.
 
-# How to use the app
+# How it works
 
-There are a few controls available to you-
+To begin, paste some ascii art into the textbox. You can just type in a few characters if you'd like.
 
-a submit button
-a stop button
-a bpm adjuster
-a synth 1 volume bar
-a synth 2 volume bar
-
-to begin, paste some ascii art into the textbox. or you can just type in a few characters if you'd like!
-
-here is a resource for some cool ASCII art if youd like to use their samples:
+Here is a resource for some ASCII art:
 https://www.asciiart.eu/
 
-once you have something in the text area, hit the submit button and enjoy!
+The application takes ASCII art as input and maps each ASCII character to a musical note. The notes are then played in sequence, creating a unique piece of music for each piece of ASCII art.
 
-you should see a smal red playhead run across the screen, when you press the stop button it will reset!
+# Features
+Real-time volume control for each synth
+BPM (Beats Per Minute) control
+Synth cutoff control
+Playback head that shows the current position in the song
+Textarea for ASCII art input, constrained to 100 x 100 characters
+Background drum beat
 
-you can play around with the volume bars to see how they affect the sounds of synth 1 and synth 2.
+# Usage
+Enter your ASCII art into the textarea.
+Adjust the BPM, volume, and synth cutoff as desired.
+Click the "submit" button to start the music.
+Click the "stop" button to stop the music.
 
-# How it all works
+Enjoy!
 
-strongestpassword takes a set of characters and maps them to a predetermined scale - E minor pentatonic.
+## Code Overview
 
-    // Predefined scale
-    const scale = [
-        'E2', 'G2', 'A2', 'B2', 'D3',
-        'E3', 'G3', 'A3', 'B3', 'D4',
-        'E4', 'G4', 'A4', 'B4', 'D5'
-    ];
+The application uses the Tone.js library to create three synths (synth1, synth2, bassSynth) and three effects (reverb, delay, chorus). Each synth has its own volume control, and synth1 has a cutoff control.
 
-we then iterate through the characters and maps them to a note in the scale.
+The ASCII art is mapped to musical notes using the mapAsciiToNotes function. This function uses two predefined scales (E minor pentatonic and E major pentatonic) and maps each ASCII character to a note in one of these scales.
 
-    const charToNote = {};
-    for (let i = 0; i < 128; i++) {
-        // Get the ASCII character
-        const char = String.fromCharCode(i);
-        // Map the character to a note in the scale
-        const note = scale[i % scale.length];
-        // Store the mapping
-        charToNote[char] = note;
-    }
+The play-button event listener starts the music when the "submit" button is clicked. It sets the BPM, starts the drum loop, and creates two Tone.Parts (part1 and part2) that play the chords mapped from the ASCII art.
 
+The stop-button event listener stops the music and resets the playback head when the "stop" button is clicked.
 
-we play the notes polyphonically based on their position in each line. So in order to achieve this we need to determine the length of the longest line, and map characters by the column.
-Due to spaces " " being such a frequently used character, we are going to only map characters that are not spaces.
+## ASCII Art to Audio Conversion
 
-    // Find the length of the longest line
-    maxLength = Math.max(...asciiArt.map(line => line.length));
+The ASCII art is converted into audio using a mapping of ASCII characters to musical notes. This mapping is done in the mapAsciiToNotes function. Here's a detailed breakdown of how it works:
 
-    // Map ASCII chars to notes in scale by column
-    for (let i = 0; i < maxLength; i++) {
-        const chord = [];
-        for (let j = 0; j < asciiArt.length; j++) {
-            const char = asciiArt[j][i];
-            // If the character is not a space, map it to a note
-            if (char && char !== ' ') {
-                const note = charToNote[char];
-                if (note) {
-                    chord.push(note);
-                }
-            }
-        }
-        chords.push(chord);
-    }
+## Choice of Scale
+The application uses two predefined scales and one initial mapping scale:
 
+Predefined:
+E minor pentatonic and E major pentatonic.
 
-to create a more musical experience, synth 1 will cycle through different note lengths for every 4 notes.
+Mapping Scale:
+E major.
 
-    const noteLengths = ['1n', '2n', '4n', '16n'];
-    let noteLengthCounter = 0;
+The choice of predefined scale depends on the position in the song. The first third of the song uses the E minor pentatonic scale, the second third uses the E major pentatonic scale, and the final third returns to the E minor pentatonic scale. The initial mapping scale is used to map notes into an object before reassigning them to scales. This introduces some variation away from the predefined scale as well as some dissonance.
 
-...
+## Mapping ASCII Characters to Notes
 
-    part1 = new Tone.Part((time, chord) => {
-        // Get the current note length
-        const noteLength = noteLengths[noteLengthCounter % noteLengths.length];
-        // Trigger the attack release with the current note length
-        synth1.triggerAttackRelease(chord, noteLength, time);
-        // Increment the counter
-        noteLengthCounter++;
-    }, chords.map((chord, i) => [i * chordTime, chord.slice(0, 5)]));
+Each ASCII character is mapped to a note in one of the scales. The mapping is done by taking the ASCII value of the character modulo the length of the scale. This ensures that all ASCII characters can be mapped to a note, and that the same character will always be mapped to the same note.
 
+## Chord Creation
+The ASCII art is read column by column, and each column of characters is converted into a chord. A chord is simply an array of notes that are played together. If a character in the column is a space, it is ignored.
 
-synth 1 also is limited to a certain amount of polyphony, once we extend beyond that point, synth 2 will start taking the excess notes.
+## Effects Triggering
+The application uses three effects: reverb, delay, and chorus. The triggering of these effects is based on the frequency of the current note:
 
-        part2 = new Tone.Part((time, chord) => {
-        chord.forEach((note, j) => {
-            synth2.triggerAttackRelease(note, "4n", time + j * Tone.Time("8n").toSeconds());
+If the frequency is higher than C4, the reverb effect is set to maximum.
+If the frequency is higher than C2, the delay effect is set to a higher value and the delay time is set to the current note length.
+If the frequency is lower than C4, the chorus effect is set to a higher value.
 
-            highPass.frequency.rampTo(5000, 0.1);
-            chorus.wet.rampTo(1, 0.1);
+## Playback
+The chords are played back using two Tone.Parts (part1 and part2). Part1 plays the first five notes of each chord using synth1, and part2 plays the next four notes using synth2. The bass synth plays the root note of each chord for four measures.
 
-        });
-    }, chords.map((chord, i) => [i * chordTime, chord.slice(5, 10)]));
+The BPM (Beats Per Minute) and volume can be adjusted in real time using the controls in the application. The playback head shows the current position in the song.
 
-
-we have also established some effects processing each time the synths are triggered:
-
-    synth1 = new Tone.PolySynth({
-        envelope: {
-            attack: 0.5,
-            decay: 0.6,
-            sustain: 1,
-            release: 2,
-        }
-    }).connect(highPass).connect(chorus).toDestination();
-
-    // Synth 2
-    synth2 = new Tone.FMSynth({
-        envelope: {
-            attack: 0.5,
-            decay: 0.6,
-            sustain: 1,
-            release: 2,
-        }
-    }).connect(lowPass).connect(reverb).connect(delay).toDestination(); //low pass, reverb and delay
-
-Synth 1 has a high pass connected to it,  it will ramp up each time synth 2 is triggered. Kind of like a key-in effect!
-
-the same effect routing is applied to a chorus on synth 1.
-
-synth 2 has a low pass connected to it, a reverb, and a delay. each time it is triggered these effects will also be heard.
-
-That pretty sums it up for the functionality of the synth engines!
-
-The external libraries used in the project are:
-
-    tone.js
-        "a Web Audio framework for creating interactive music in the browser"
-        https://tonejs.github.io/
-
-
-and
-
-    http-server
-        "a simple, zero-configuration command-line static HTTP server."
-        https://www.npmjs.com/package/http-server
-
+## Thank you
 
 Thanks for browsing through my README, and thanks for checking out my prototype. I hope you enjoyed it!
 
-
 ## License
 
-Copyright (c) [2024] [Phil Sobrepena]
+Copyright (c) [2024] [Phil]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -184,7 +113,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-## Third-Party Libraries
+## Dependencies / Third-Party Libraries
 
 This project uses the following third-party libraries:
 
