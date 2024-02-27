@@ -2,7 +2,7 @@
 
 Welcome! Thanks for checking out my audio prototype.
 
-This project is an ASCII image to Audio conversion tool. It will take any size input of ascii characters under 10,000 in length, and algorithmically generate audio from it!
+This project, titled "strongestpassword.fm", is an ASCII image to Audio conversion app. It will take any size input of ascii characters under 10,000 in length, and algorithmically generate audio from it! It is inspired by the password validation process found on virtually any sign up page. Enjoy!
 
 
 To begin, access the project from your teminal. you can do this by right clicking on the project directory and clicking "New Terminal at Folder"
